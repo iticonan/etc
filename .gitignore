@@ -1,0 +1,19 @@
+#careful with so many etc files!
+/*
+!.gitignore
+conf.d/
+!pacman.d/
+/pacman.d/*
+!pacman.d/mirrorlist
+!conf.d/jellyfin
+!fish/
+!gtk-2.0/
+!gtk-3.0/
+!keyd/
+!modprobe.d/
+!my.cnd.d/
+!nginx/
+!php/
+!php73/
+!udev/
+!webapps/phpmyadmin/
