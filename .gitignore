@@ -16,4 +16,5 @@ conf.d/
 !php/
 !php73/
 !udev/
+udev/rules.d/80-dotool.rules
 !webapps/phpmyadmin/
