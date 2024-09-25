@@ -15,34 +15,34 @@
   @tab q    w    e    r    t    y    u    i    o    p    @dpd ]    \
   @cap a    s    d    f    g    h    j    k    l    @psb '    ret
   @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
-  lctl @wrn _               spc           @rgr @cld @cld _   _    _
+  lctl @wtp _               spc           @rgr rctl _     _   _    _
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
- S-`  S-=  S-[  S-]  S-7  S-\  S-1   =   @lpt @gnt  _    _    _   _
-  _   min  S-9  S-0   '   S-'   ◀    ▼    ▲    ▶    _    _    _
+ S-`  S-=  S-[  S-]  S-7  S-\  S-1   =   S-,  S-.   _    _    _   _
+  _   min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   _    _    _
   \    [    ]   S-;  S-2   _   S-/  S--  S-5  S-4   _    _    _
-  _    _    _              _              _    _    _    _    _   _
+  _    _    _             bspc           spc  del  del   _    _   _
 )
 
 (defalias
-  wrn (tap-hold 120 120 A-a lmet)
+  f◀ (fork left (unmod  lctl lalt left) (ralt))
+  f▼ (fork down (unmod  lctl lalt down) (ralt))
+  f▲ (fork up   (unmod  lctl lalt up  ) (ralt))
+  f▶ (fork right (unmod lctl lalt right) (ralt))
+  wtp (tap-hold 120 120 A-a lmet)
   gxt (multi f24 (tap-hold 120 120 grv (layer-while-held xtra)))
   tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
   cap (multi f24 (tap-hold-press 120 120 esc (layer-while-held wmdo)))
   s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
   psb (tap-hold 100 120 ; (layer-while-held psinkbols))
-  cld (multi f24 (tap-hold 120 120 C-/ (multi rctl))) 
+  ;;cld (multi f24 (tap-hold 120 120 C-/ (multi rctl))) 
   dpd (tap-hold 120 120 [ (layer-while-held nav))
-  rgr (multi f24 (tap-hold 120 120 ret ralt))
-  mau (movemouse-accel-up 30 270 3 17)
-  mad (movemouse-accel-down 30 270 3 17)
-  mal (movemouse-accel-left 30 270 3 17)
-  mar (movemouse-accel-right 30 270 3 17)
-  hpr (fork home (unmod  lctl lsft Tab) (lalt lmet))
-  enx (fork end  (unmod  lctl      Tab) (lalt lmet))
-  lpt (fork S-, (unmod  lctl lsft Tab) (ralt))
-  gnt (fork S-. (unmod  lctl      Tab) (ralt))
+  rgr (multi f24 (tap-hold 100 100 ret ralt))
+  mau (fork (movemouse-accel-up 30 270 3 17)   (multi lmet up) (lalt))
+  mad (fork (movemouse-accel-down 30 270 3 17) (multi lmet down) (lalt))
+  mal (fork (movemouse-accel-left 30 270 3 17) (multi lmet left) (lalt))
+  mar (fork (movemouse-accel-right 30 270 3 17) (multi lmet right) (lalt))
   mwl (mwheel-left 150 120)
   mwd (mwheel-down 150 120)
   mwu (mwheel-up 150 120)
@@ -53,25 +53,25 @@
     (0 1 2 3 4 5 6 7 8 9 kp0 kp1 kp2 kp3 kp4 kp5 kp6 kp7 kp8 kp9 bspc del up down left rght )
   ) rsft)
   nlk (layer-switch nav)
-  fcn (multi lctl (layer-while-held qwerty))
+  ;;fcn (multi lctl (layer-while-held qwerty))
   qwt (tap-hold 150 150 (layer-switch qwerty) (layer-while-held wmdo))
-  gr1 (tap-hold 150 150 @hpr (multi (layer-toggle ptrtopleft)))
-  gr2 (tap-hold 150 150 M-up (multi (layer-toggle ptrtopmid)))
-  gr3 (tap-hold 150 150 @enx (multi (layer-toggle ptrtopright)))
-  gr4 (tap-hold 150 150 M-left (multi (layer-toggle ptrmidleft)))
-  gr5 (tap-hold 150 150 M-down (multi (layer-toggle ptrmidmid)))
-  gr6 (tap-hold 150 150 M-right (multi (layer-toggle ptrmidright)))
-  gr7 (tap-hold 0 150 M-C-d (multi (layer-toggle ptrlowleft)))
-  gr8 (tap-hold 0 150 M-C-left (multi (layer-toggle ptrlowmid)))
-  gr9 (tap-hold 0 180 M-C-right (multi (layer-toggle ptrlowright)))
+  gr1 (tap-hold 150 150 pgdn (multi (layer-toggle ptrtopleft)))
+  gr2 (tap-hold 150 150 pgup (multi (layer-toggle ptrtopmid)))
+  gr3 (tap-hold 150 150 end  (multi (layer-toggle ptrtopright)))
+  gr4 (tap-hold 150 150 M-▼ (multi (layer-toggle ptrmidleft)))
+  gr5 (tap-hold 150 150 M-▲ (multi (layer-toggle ptrmidmid)))
+  gr6 (tap-hold 150 150 M-▶ (multi (layer-toggle ptrmidright)))
+  gr7 (tap-hold 0 150 C-S-Tab (multi (layer-toggle ptrlowleft)))
+  gr8 (tap-hold 0 150 C-Tab   (multi (layer-toggle ptrlowmid)))
+  gr9 (tap-hold 0 180 C-F4    (multi (layer-toggle ptrlowright)))
 )
 
 (deflayer nav
-  _      _   left  up  down rght  _    _    _    _    _    _    _    _
-  @nlk lrld @gr1 @gr2 @gr3 pgup @mwu @mwl @mau @mwr mute  @nlk  _    _
-  @qwt M-F5 @gr4 @gr5 @gr6 pgdn @mwd @mal @mad @mar mmid M-mute _
-  _    @gr7 @gr8 @gr9 M-C-F4 _  brdn brup vold volu mrgt   _    _
-  @fcn _    _              mlft           bspc del  del    _    _    _
+  _     _   left  up  down rght   _    _    _    _    _    _    _    _
+  @nlk lrld @mwl @mau @mwr @mwu home @gr1 @gr2 @gr3 M-mute @nlk _    _
+  @qwt M-F5 @mal @mad @mar @mwd  M-◀ @gr4 @gr5 @gr6  mmid  @qwt _
+  _    brdn brup vold volu  ret mute @gr7 @gr8 @gr9  mrgt  _    _
+  _     _   _              mlft            _    _     _    _    _    _
 )
 
 (deflayer wmdo
@@ -85,8 +85,8 @@
 (deflayer fncur
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    ins  F1   F2   F3   F4   _   C-S-↹ C-↹  S-`  _    _    _    _
-  _    prnt F5   F6   F7   F8   S-6  S-3  S-8  `    _    _    _
-  _    F9   F10  F11  F12  _    S-◀  S-▼  S-▲  S-▶  _    _    _
+  _    prnt F5   F6   F7   F8   S-◀  S-▼  S-▲  S-▶  _    _    _
+  _    F9   F10  F11  F12  _    S-6  S-3  S-8  `    _    _    _
   _    _    _              _              bspc del  del  _    _    _
 )
 
@@ -133,7 +133,7 @@
   x4y5 (multi f13 f17 p (setmouse $x4 $y5))     x5y5 (multi f14 f17 y (setmouse $x5 $y5))
   x4y6 (multi f13 f17 ; (setmouse $x4 $y6))     x5y6 (multi f14 f17 h (setmouse $x5 $y6))
   x4y7 (multi f13 f17 / (setmouse $x4 $y7))     x5y7 (multi f14 f17 n (setmouse $x5 $y7))
-  x4y8 (multi f13 f18 0 (setmouse $x4 $y8))     x5y8 (multi f14 f18 7 (setmouse $x5 $y8))
+  x4y8 (multi f13 f18 - (setmouse $x4 $y8))     x5y8 (multi f14 f18 7 (setmouse $x5 $y8))
   x4y9 (multi f13 f18 p (setmouse $x4 $y9))     x5y9 (multi f14 f18 y (setmouse $x5 $y9))
   x4ya (multi f13 f18 ; (setmouse $x4 $ya))     x5ya (multi f14 f18 h (setmouse $x5 $ya))
   x4yb (multi f13 f18 / (setmouse $x4 $yb))     x5yb (multi f14 f18 n (setmouse $x5 $yb))
@@ -159,7 +159,7 @@
   x8y5 (multi f14 f17 o (setmouse $x8 $y5))     x9y5 (multi f14 f17 p (setmouse $x9 $y5))
   x8y6 (multi f14 f17 l (setmouse $x8 $y6))     x9y6 (multi f14 f17 ; (setmouse $x9 $y6))
   x8y7 (multi f14 f17 . (setmouse $x8 $y7))     x9y7 (multi f14 f17 / (setmouse $x9 $y7))
-  x8y8 (multi f14 f18 0 (setmouse $x8 $y8))     x9y8 (multi f14 f18 0 (setmouse $x9 $y8))
+  x8y8 (multi f14 f18 0 (setmouse $x8 $y8))     x9y8 (multi f14 f18 - (setmouse $x9 $y8))
   x8y9 (multi f14 f18 o (setmouse $x8 $y9))     x9y9 (multi f14 f18 p (setmouse $x9 $y9))
   x8ya (multi f14 f18 l (setmouse $x8 $ya))     x9ya (multi f14 f18 ; (setmouse $x9 $ya))
   x8yb (multi f14 f18 . (setmouse $x8 $yb))     x9yb (multi f14 f18 / (setmouse $x9 $yb))
@@ -198,7 +198,7 @@
   xey5 (multi f15 f17 p (setmouse $xe $y5))
   xey6 (multi f15 f17 ; (setmouse $xe $y6))
   xey7 (multi f15 f17 / (setmouse $xe $y7))
-  xey8 (multi f15 f18 0 (setmouse $xe $y8))
+  xey8 (multi f15 f18 - (setmouse $xe $y8))
   xey9 (multi f15 f18 p (setmouse $xe $y9))
   xeya (multi f15 f18 ; (setmouse $xe $ya))
   xeyb (multi f15 f18 / (setmouse $xe $yb))
@@ -206,70 +206,70 @@
 
 ;; TOP AREA
 (deflayer ptrtopleft
-_ 1 2 3 4 5  6    @x0y0 @x1y0 @x2y0 @x3y0  @x4y0 _ _
-_ q w e r t @x0y1 @x1y1 @x2y1 @x3y1 @x4y1  [ ] \
-_ a s d f g @x0y2 @x1y2 @x2y2 @x3y2 @x4y2  ' _
-_ z x c v b @x0y3 @x1y3 @x2y3 @x3y3 @x4y3  _ _
+_ @x0y0 @x1y0 @x2y0 @x3y0 @x4y0 _ _ _ _ _  _ _ _
+_ @x0y1 @x1y1 @x2y1 @x3y1 @x4y1 _ _ _ _ _  [ ] \
+_ @x0y2 @x1y2 @x2y2 @x3y2 @x4y2 _ _ _ _ _  ' _
+  @x0y3 @x1y3 @x2y3 @x3y3 @x4y3 _ _ _ _ _ _  _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrtopmid
-_ 1 2 3 4 5 6     @x5y0 @x6y0 @x7y0 @x8y0 @x9y0 _ _
-_ q w e r t @x5y1 @x6y1 @x7y1 @x8y1 @x9y1 [ ] \
-_ a s d f g @x5y2 @x6y2 @x7y2 @x8y2 @x9y2 ' _
-_ z x c v b @x5y3 @x6y3 @x7y3 @x8y3 @x9y3 _ _
+_ @x5y0 @x6y0 @x7y0 @x8y0 @x9y0 _ _ _ _ _ _ _ _
+_ @x5y1 @x6y1 @x7y1 @x8y1 @x9y1 _ _ _ _ _ [ ] \
+_ @x5y2 @x6y2 @x7y2 @x8y2 @x9y2 _ _ _ _ _ ' _
+  @x5y3 @x6y3 @x7y3 @x8y3 @x9y3 _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrtopright
-_ 1 2 3 4 5 6     @xay0 @xby0 @xcy0 @xdy0 @xey0 _ _
-_ q w e r t @xay1 @xby1 @xcy1 @xdy1 @xey1  [ ] \
-_ a s d f g @xay2 @xby2 @xcy2 @xdy2 @xey2  ' _
-_ z x c v b @xay3 @xby3 @xcy3 @xdy3 @xey3  _ _
+_ @xay0 @xby0 @xcy0 @xdy0 @xey0 _ _ _ _ _  _ _ _
+_ @xay1 @xby1 @xcy1 @xdy1 @xey1 _ _ _ _ _  [ ] \
+_ @xay2 @xby2 @xcy2 @xdy2 @xey2 _ _ _ _ _  ' _
+  @xay3 @xby3 @xcy3 @xdy3 @xey3 _ _ _ _ _ _  _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 
 ;;;;; MID AREA 
 (deflayer ptrmidleft
-_ 1 2 3 4 5 6     @x0y4 @x1y4 @x2y4 @x3y4 @x4y4 _ _
-_ q w e r t @x0y5 @x1y5 @x2y5 @x3y5 @x4y5 [ ] \
-_ a s d f g @x0y6 @x1y6 @x2y6 @x3y6 @x4y6 ' _
-_ z x c v b @x0y7 @x1y7 @x2y7 @x3y7 @x4y7 _ _
+_ @x0y4 @x1y4 @x2y4 @x3y4 @x4y4 _ _ _ _ _ _ _ _
+_ @x0y5 @x1y5 @x2y5 @x3y5 @x4y5 _ _ _ _ _ [ ] \
+_ @x0y6 @x1y6 @x2y6 @x3y6 @x4y6 _ _ _ _ _ ' _
+  @x0y7 @x1y7 @x2y7 @x3y7 @x4y7 _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrmidmid
-_ 1 2 3 4 5 6     @x5y4 @x6y4 @x7y4 @x8y4 @x9y4 _ _
-_ q w e r t @x5y5 @x6y5 @x7y5 @x8y5 @x9y5 [ ] \
-_ a s d f g @x5y6 @x6y6 @x7y6 @x8y6 @x9y6 ' _
-_ z x c v b @x5y7 @x6y7 @x7y7 @x8y7 @x9y7 _ _
+_ @x5y4 @x6y4 @x7y4 @x8y4 @x9y4 _ _ _ _ _ _ _ _
+_ @x5y5 @x6y5 @x7y5 @x8y5 @x9y5 _ _ _ _ _ [ ] \
+_ @x5y6 @x6y6 @x7y6 @x8y6 @x9y6 _ _ _ _ _ ' _
+  @x5y7 @x6y7 @x7y7 @x8y7 @x9y7 _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrmidright
-_ 1 2 3 4 5 6     @xay4 @xby4 @xcy4 @xdy4 @xey4 _ _
-_ q w e r t @xay5 @xby5 @xcy5 @xdy5 @xey5 [ ] \
-_ a s d f g @xay6 @xby6 @xcy6 @xdy6 @xey6 ' _
-_ z x c v b @xay7 @xby7 @xcy7 @xdy7 @xey7 _ _
+_ @xay4 @xby4 @xcy4 @xdy4 @xey4 _ _ _ _ _ _ _ _
+_ @xay5 @xby5 @xcy5 @xdy5 @xey5 _ _ _ _ _ [ ] \
+_ @xay6 @xby6 @xcy6 @xdy6 @xey6 _ _ _ _ _ ' _
+  @xay7 @xby7 @xcy7 @xdy7 @xey7 _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 
 ;;;;; LOW AREA 
 (deflayer ptrlowleft
-_ 1 2 3 4 5 6     @x0y8 @x1y8 @x2y8 @x3y8 @x4y8 _ _
-_ q w e r t @x0y9 @x1y9 @x2y9 @x3y9 @x4y9 [ ] \
-_ a s d f g @x0ya @x1ya @x2ya @x3ya @x4ya ' _
-_ z x c v b @x0yb @x1yb @x2yb @x3yb @x4yb _ _
+_ @x0y8 @x1y8 @x2y8 @x3y8 @x4y8 _ _ _ _ _ _ _ _
+_ @x0y9 @x1y9 @x2y9 @x3y9 @x4y9 _ _ _ _ _ [ ] \
+_ @x0ya @x1ya @x2ya @x3ya @x4ya _ _ _ _ _ ' _
+  @x0yb @x1yb @x2yb @x3yb @x4yb _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrlowmid
-_ 1 2 3 4 5 6     @x5y8 @x6y8 @x7y8 @x8y8 @x9y8 _ _
-_ q w e r t @x5y9 @x6y9 @x7y9 @x8y9 @x9y9 [ ] \
-_ a s d f g @x5ya @x6ya @x7ya @x8ya @x9ya ' _
-_ z x c v b @x5yb @x6yb @x7yb @x8yb @x9yb _ _
+_ @x5y8 @x6y8 @x7y8 @x8y8 @x9y8 _ _ _ _ _ _ _ _
+_ @x5y9 @x6y9 @x7y9 @x8y9 @x9y9 _ _ _ _ _ [ ] \
+_ @x5ya @x6ya @x7ya @x8ya @x9ya _ _ _ _ _ ' _
+  @x5yb @x6yb @x7yb @x8yb @x9yb _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 (deflayer ptrlowright
-_ 1 2 3 4 5 6     @xay8 @xby8 @xcy8 @xdy8 @xey8 _ _
-_ q w e r t @xay9 @xby9 @xcy9 @xdy9 @xey9 [ ] \
-_ a s d f g @xaya @xbya @xcya @xdya @xeya ' _
-_ z x c v b @xayb @xbyb @xcyb @xdyb @xeyb _ _
+_ @xay8 @xby8 @xcy8 @xdy8 @xey8 _ _ _ _ _ _ _ _
+_ @xay9 @xby9 @xcy9 @xdy9 @xey9 _ _ _ _ _ [ ] \
+_ @xaya @xbya @xcya @xdya @xeya _ _ _ _ _ ' _
+  @xayb @xbyb @xcyb @xdyb @xeyb _ _ _ _ _ _ _ _
 _ _ _ spc  _ _ _ _ _ _
 )
 

@@ -13,6 +13,7 @@ conf.d/
 !modprobe.d/
 !my.cnd.d/
 !nginx/
+!kanata/
 !php/
 !php73/
 !udev/
