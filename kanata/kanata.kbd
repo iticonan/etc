@@ -13,13 +13,13 @@
 (deflayer qwerty
   @gxt 1    2    3    4    5    6    7    8    9    0    -    =    bspc
   @tab q    w    e    r    t    y    u    i    o    p    @dpd ]    \
-  @cap a    s    d    f    g    h    j    k    l    @psb '    ret
+  @cap a    s    d    f    g    h    j    k    l    @psb @qxf ret
   @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
-  lctl @wtp _               spc           @rgr rctl _     _   _    _
+  @ctp _    _              _              @rgr @ctp @ctp  _   _    _
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
- S-`  S-=  S-[  S-]  S-7  S-\  S-1   =   S-,  S-.   _    _    _   _
+  `   S-=  S-[  S-]  S-7  S-\  S-1   =   S-,  S-.   _    _    _   _
   _   min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   _    _    _
   \    [    ]   S-;  S-2   _   S-/  S--  S-5  S-4   _    _    _
   _    _    _             bspc           spc  del  del   _    _   _
@@ -30,11 +30,13 @@
   f▼ (fork down (unmod  lctl lalt down) (ralt))
   f▲ (fork up   (unmod  lctl lalt up  ) (ralt))
   f▶ (fork right (unmod lctl lalt right) (ralt))
-  wtp (tap-hold 120 120 A-a lmet)
-  gxt (multi f24 (tap-hold 120 120 grv (layer-while-held xtra)))
+  ctp (tap-hold 120 120 A-a lctl)
+  gxt (tap-hold 120 120 grv (layer-while-held xtra))
   tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
-  cap (multi f24 (tap-hold-press 120 120 esc (layer-while-held wmdo)))
+  cap (fork (tap-hold-press 120 120 esc (layer-while-held wmdo)) 
+            (multi (release-key alt) (macro esc 5 rpt)) (lalt))
   s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
+  qxf (tap-hold 120 120 ' (layer-while-held fncur))
   psb (tap-hold 100 120 ; (layer-while-held psinkbols))
   ;;cld (multi f24 (tap-hold 120 120 C-/ (multi rctl))) 
   dpd (tap-hold 120 120 [ (layer-while-held nav))
@@ -61,9 +63,10 @@
   gr4 (tap-hold 150 150 M-▼ (multi (layer-toggle ptrmidleft)))
   gr5 (tap-hold 150 150 M-▲ (multi (layer-toggle ptrmidmid)))
   gr6 (tap-hold 150 150 M-▶ (multi (layer-toggle ptrmidright)))
-  gr7 (tap-hold 0 150 C-S-Tab (multi (layer-toggle ptrlowleft)))
-  gr8 (tap-hold 0 150 C-Tab   (multi (layer-toggle ptrlowmid)))
-  gr9 (tap-hold 0 180 C-F4    (multi (layer-toggle ptrlowright)))
+  gr7 (tap-hold 0 150 prev (multi (layer-toggle ptrlowleft)))
+  gr8 (tap-hold 0 150 pp   (multi (layer-toggle ptrlowmid)))
+  gr9 (tap-hold 0 180 next (multi (layer-toggle ptrlowright)))
+  es2 (macro esc 30 rpt)
 )
 
 (deflayer nav
@@ -84,18 +87,19 @@
 
 (deflayer fncur
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    ins  F1   F2   F3   F4   _   C-S-↹ C-↹  S-`  _    _    _    _
+ S-↹   ins  F1   F2   F3   F4   C-F4 `   C-S-↹ C-↹  _    _    _    _
   _    prnt F5   F6   F7   F8   S-◀  S-▼  S-▲  S-▶  _    _    _
-  _    F9   F10  F11  F12  _    S-6  S-3  S-8  `    _    _    _
-  _    _    _              _              bspc del  del  _    _    _
+  _    F9   F10  F11  F12  _    S-6  S-3  S-8  S-`  _    _    _
+  _    _    _            bspc             ret  del  del  _    _    _
 )
 
+;; WIP. maybe kinda would be useful... 
 (deflayer xtra
-  _   volu brdn @mau brup @mwu _    _    _    _    _    _    _    _
-  _   vold @mal @mad @mar @mwd _    _    _    _    _    _    _    _
-  _   mute  _    _    _   _    _    prev pp   next _    _    _
-  _    _    _    _    _   _    _    _    _    _    _    _    _
-  _   mrgt mmid          mlft            _    _    _    _    _    _
+  _    _  A-◀  A-▲  A-▼  A-▶ @es2  _    _    _    _    _    _    _
+  _    _  S-◀  S-▲  S-▼  S-▶  _  @mwl @mau @mwr @mwu   _    _    _
+  _    _   _    _    _   _    _  @mal @mad @mar @mwd   _    _
+  _    _   _    _    _   _    _  prev  pp  next   _    _    _
+  _    _   _            ret             _    _    _    _    _    _
 )
 
 (defalias 
