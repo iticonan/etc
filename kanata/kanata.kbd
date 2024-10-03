@@ -11,11 +11,11 @@
   lctl lmet lalt           spc            ralt rmet rctl left down right
 )
 (deflayer qwerty
-  @gxt 1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  @tab q    w    e    r    t    y    u    i    o    p    @dpd ]    \
-  @cap a    s    d    f    g    h    j    k    l    @psb @qxf ret
-  @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
-  @ctp _    _              _              @rgr @ctp @ctp  _   _    _
+  @gxt _    _    _    _    _    _    _    _    _    _    _    _    _
+  @tab _    _    _    _    _    _    _    _    _    _    @dpd _    _
+  @cap _    _    _    _    _    _    _    _    _    @psb @qxf _
+  @sf1 _    _    _    _    _    _    _    _    _    @s2f @sfw _ 
+   _   _    _              _              @rgr @ctp @ctp  _   _    _
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
@@ -26,15 +26,11 @@
 )
 
 (defalias
-  f◀ (fork left (unmod  lctl lalt left) (ralt))
-  f▼ (fork down (unmod  lctl lalt down) (ralt))
-  f▲ (fork up   (unmod  lctl lalt up  ) (ralt))
-  f▶ (fork right (unmod lctl lalt right) (ralt))
   ctp (tap-hold 120 120 A-a lctl)
   gxt (tap-hold 120 120 grv (layer-while-held xtra))
   tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
-  cap (fork (tap-hold-press 120 120 esc (layer-while-held wmdo)) 
-            (multi (release-key alt) (macro esc 5 rpt)) (lalt))
+  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wmdo)))
+            (multi (release-key alt) (macro esc 100 rpt)) (lalt))
   s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
   qxf (tap-hold 120 120 ' (layer-while-held fncur))
   psb (tap-hold 100 120 ; (layer-while-held psinkbols))
@@ -77,12 +73,19 @@
   _     _   _              mlft            _    _     _    _    _    _
 )
 
+(defalias
+  nk7 (multi (release-key met) kp7)  nk8 (multi (release-key met) kp8) nk9 (multi (release-key met) kp9) 
+  nk4 (multi (release-key met) kp4)  nk5 (multi (release-key met) kp5) nk6 (multi (release-key met) kp6) 
+  nk1 (multi (release-key met) kp1)  nk2 (multi (release-key met) kp2) nk3 (multi (release-key met) kp3) 
+  nk0 (multi (release-key met) kp0) 
+  ptb (multi (release-key met) C-S-↹) 	ntb (multi (release-key met) C-↹)
+)
 (deflayer wmdo
-  _    _     _   C-S-↹ C-↹   _    _     _    _     _   _    _    _    _
-  _    _    M-1   M-2  M-3  M-4  M-'   kp7  kp8   kp9  _    _    _    _
-  _    _    M-5   M-6  M-7  M-8  M-[   kp4  kp5   kp6  _    _    _
-  _   M-9   M-0   M--  M-=   _   M-]   kp1  kp2   kp3  _    _    _
-  _    _     _               _              kp0    _   _    _    _    _
+  _    _     _    @ptb @ntb  _    _     _    _     _   _    _    _    _
+  _    _    M-1   M-2  M-3  M-4  M-'   @nk7 @nk8 @nk9  _    _    _    _
+  _    _    M-5   M-6  M-7  M-8  M-[   @nk4 @nk5 @nk6  _    _    _
+  _   M-9   M-0   M--  M-=   _   M-]   @nk1 @nk2 @nk3  _    _    _
+  _    _     _               _              @nk0  _    _    _    _    _
 )
 
 (deflayer fncur
