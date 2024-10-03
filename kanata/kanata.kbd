@@ -14,8 +14,24 @@
   @gxt _    _    _    _    _    _    _    _    _    _    _    _    _
   @tab _    _    _    _    _    _    _    _    _    _    @dpd _    _
   @cap _    _    _    _    _    _    _    _    _    @psb @qxf _
-  @sf1 _    _    _    _    _    _    _    _    _    @s2f @sfw _ 
+  @sf1 _    _    _    _    _    _    _    _    _    _    @sfw _ 
    _   _    _              _              @rgr @ctp @ctp  _   _    _
+)
+(defalias
+  gxt (tap-hold 120 120 grv (layer-while-held xtra))
+  tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
+  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wmdo)))
+            (multi (release-key alt) (macro esc 100 rpt)) (lalt))
+  ;;s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
+  sf1 (fork (one-shot 500 lsft) CapsLock (rsft))
+
+  dpd (tap-hold 120 120 [ (layer-while-held nav))
+  psb (tap-hold 100 120 ; (layer-while-held psinkbols))
+  qxf (tap-hold 120 120 ' (layer-while-held fncur))
+  sfw (fork (tap-hold 100 100 (caps-word 2000) rsft) CapsLock (lsft))
+  
+  rgr (multi f24 (tap-hold 100 100 ret ralt))
+  ctp (tap-hold 120 120 A-a rctl)
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
@@ -26,17 +42,6 @@
 )
 
 (defalias
-  ctp (tap-hold 120 120 A-a lctl)
-  gxt (tap-hold 120 120 grv (layer-while-held xtra))
-  tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
-  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wmdo)))
-            (multi (release-key alt) (macro esc 100 rpt)) (lalt))
-  s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
-  qxf (tap-hold 120 120 ' (layer-while-held fncur))
-  psb (tap-hold 100 120 ; (layer-while-held psinkbols))
-  ;;cld (multi f24 (tap-hold 120 120 C-/ (multi rctl))) 
-  dpd (tap-hold 120 120 [ (layer-while-held nav))
-  rgr (multi f24 (tap-hold 100 100 ret ralt))
   mau (fork (movemouse-accel-up 30 270 3 17)   (multi lmet up) (lalt))
   mad (fork (movemouse-accel-down 30 270 3 17) (multi lmet down) (lalt))
   mal (fork (movemouse-accel-left 30 270 3 17) (multi lmet left) (lalt))
@@ -45,14 +50,8 @@
   mwd (mwheel-down 150 120)
   mwu (mwheel-up 150 120)
   mwr (mwheel-right 150 120)
-  sf1 (one-shot 500 lsft)
-  sfw (tap-hold 100 100 (caps-word-custom 2000
-    (a b c d e f g h i j k l m n o p q r s t u v w x y z -)
-    (0 1 2 3 4 5 6 7 8 9 kp0 kp1 kp2 kp3 kp4 kp5 kp6 kp7 kp8 kp9 bspc del up down left rght )
-  ) rsft)
   nlk (layer-switch nav)
-  ;;fcn (multi lctl (layer-while-held qwerty))
-  qwt (tap-hold 150 150 (layer-switch qwerty) (layer-while-held wmdo))
+  wma (tap-hold 150 150 (layer-switch qwerty) (layer-while-held wmdo))
   gr1 (tap-hold 150 150 pgdn (multi (layer-toggle ptrtopleft)))
   gr2 (tap-hold 150 150 pgup (multi (layer-toggle ptrtopmid)))
   gr3 (tap-hold 150 150 end  (multi (layer-toggle ptrtopright)))
@@ -68,24 +67,24 @@
 (deflayer nav
   _     _   left  up  down rght   _    _    _    _    _    _    _    _
   @nlk lrld @mwl @mau @mwr @mwu home @gr1 @gr2 @gr3 M-mute @nlk _    _
-  @qwt M-F5 @mal @mad @mar @mwd  M-◀ @gr4 @gr5 @gr6  mmid  @qwt _
+  @wma M-F5 @mal @mad @mar @mwd  M-◀ @gr4 @gr5 @gr6  mmid  @wma _
   _    brdn brup vold volu  ret mute @gr7 @gr8 @gr9  mrgt  _    _
-  _     _   _              mlft            _    _     _    _    _    _
+  _     _   _              mlft           mmid mrgt  mrgt  _    _    _
 )
 
 (defalias
   nk7 (multi (release-key met) kp7)  nk8 (multi (release-key met) kp8) nk9 (multi (release-key met) kp9) 
   nk4 (multi (release-key met) kp4)  nk5 (multi (release-key met) kp5) nk6 (multi (release-key met) kp6) 
   nk1 (multi (release-key met) kp1)  nk2 (multi (release-key met) kp2) nk3 (multi (release-key met) kp3) 
-  nk0 (multi (release-key met) kp0) 
+  nk0 (multi (release-key met) kp0)  nk. (multi (release-key met) kp.) nke (multi (release-key met) kprt)
   ptb (multi (release-key met) C-S-↹) 	ntb (multi (release-key met) C-↹)
 )
 (deflayer wmdo
   _    _     _    @ptb @ntb  _    _     _    _     _   _    _    _    _
   _    _    M-1   M-2  M-3  M-4  M-'   @nk7 @nk8 @nk9  _    _    _    _
   _    _    M-5   M-6  M-7  M-8  M-[   @nk4 @nk5 @nk6  _    _    _
-  _   M-9   M-0   M--  M-=   _   M-]   @nk1 @nk2 @nk3  _    _    _
-  _    _     _               _              @nk0  _    _    _    _    _
+  _   M-9   M-0   M--  M-=   _   M-]   @nk1 @nk2 @nk3 @nke  _    _
+  _    _     _               _              @nk0 @nk. @nk.  _    _    _
 )
 
 (deflayer fncur
