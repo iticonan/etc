@@ -1,7 +1,7 @@
 ( defcfg
    process-unmapped-keys yes
    windows-altgr cancel-lctl-press
-   linux-output-device-bus-type USB
+   ;;linux-output-device-bus-type USB
 )
 
 (defsrc
@@ -12,10 +12,10 @@
   lctl lmet lalt           spc            ralt rmet rctl left down right
 )
 (deflayer qwerty
-  @gxt _    _    _    _    _    _    _    _    _    _    _    _    _
-  @tab _    _    _    _    _    _    _    _    _    _    @dpd _    _
-  @cap _    _    _    _    _    _    _    _    _    @psb @qxf _
-  @sf1 _    _    _    _    _    _    _    _    _    _    @sfw _ 
+  @gxt 1    2    3    4    5    6    7    8    9    0    -    =    _
+  @tab q    w    e    r    t    y    u    i    o    p    @dpd _    _
+  @cap a    s    d    f    g    h    j    k    l    @psb _    _
+  @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
    _   _    _              _              @rgr @ctp @ctp  _   _    _
 )
 (defalias
@@ -23,7 +23,7 @@
   tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
   cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wmdo)))
             (multi (release-key alt) (macro esc 100 rpt)) (lalt))
-  ;;s2f (multi f24 (tap-hold 120 120 / (layer-while-held fncur)))
+  s2f (tap-hold 120 120 / (layer-while-held fncur))
   sf1 (fork (one-shot 500 lsft) CapsLock (rsft))
 
   dpd (tap-hold 120 120 [ (layer-while-held nav))
@@ -52,40 +52,41 @@
   mwu (mwheel-up 150 120)
   mwr (mwheel-right 150 120)
   nlk (layer-switch nav)
-  wma (tap-hold 150 150 (layer-switch qwerty) (layer-while-held wmdo))
-  gr1 (tap-hold 150 150 pgdn (multi (layer-toggle ptrtopleft)))
-  gr2 (tap-hold 150 150 pgup (multi (layer-toggle ptrtopmid)))
-  gr3 (tap-hold 150 150 end  (multi (layer-toggle ptrtopright)))
-  gr4 (tap-hold 150 150 M-▼ (multi (layer-toggle ptrmidleft)))
-  gr5 (tap-hold 150 150 M-▲ (multi (layer-toggle ptrmidmid)))
-  gr6 (tap-hold 150 150 M-▶ (multi (layer-toggle ptrmidright)))
-  gr7 (tap-hold 0 150 prev (multi (layer-toggle ptrlowleft)))
-  gr8 (tap-hold 0 150 pp   (multi (layer-toggle ptrlowmid)))
-  gr9 (tap-hold 0 180 next (multi (layer-toggle ptrlowright)))
+  wma (tap-hold 150 150 (layer-switch qwerty) (multi lmet (layer-while-held wmdo)))
+  kz1 (tap-hold 150 150 kp1 (multi (layer-toggle ptrlowleft)))
+  kz2 (tap-hold 150 150 kp2 (multi (layer-toggle ptrlowmid)))
+  kz3 (tap-hold 150 150 kp3 (multi (layer-toggle ptrlowright)))
+  kz4 (tap-hold 150 150 kp4 (multi (layer-toggle ptrmidleft)))
+  kz5 (tap-hold 150 150 kp5 (multi (layer-toggle ptrmidmid)))
+  kz6 (tap-hold 150 150 kp6 (multi (layer-toggle ptrmidright)))
+  kz7 (tap-hold 150 150 kp7 (multi (layer-toggle ptrtopleft)))
+  kz8 (tap-hold 150 150 kp8 (multi (layer-toggle ptrtopmid)))
+  kz9 (tap-hold 150 150 kp9 (multi (layer-toggle ptrtopright)))
   es2 (macro esc 30 rpt)
 )
 
 (deflayer nav
-  _     _   left  up  down rght   _    _    _    _    _    _    _    _
-  @nlk lrld @mwl @mau @mwr @mwu home @gr1 @gr2 @gr3 M-mute @nlk _    _
-  @wma M-F5 @mal @mad @mar @mwd  M-◀ @gr4 @gr5 @gr6  mmid  @wma _
-  _    brdn brup vold volu  ret mute @gr7 @gr8 @gr9  mrgt  _    _
-  _     _   _              mlft           mmid mrgt  mrgt  _    _    _
+  _     _   left  up  down rght   _    _  C-S-↹ C-↹   _    _    _    _
+  @nlk lrld @mwl @mau @mwr @mwu pgup @kz7 @kz8 @kz9  bspc  @nlk _    _
+  @wma M-F5 @mal @mad @mar @mwd pgdn @kz4 @kz5 @kz6  mmid  @wma _
+  _    brdn brup vold volu mute home @kz1 @kz2 @kz3   end  _    _
+  @ctr  _   @alt           mlft            kp0 mrgt  mrgt  _    _    _
 )
 
+
 (defalias
-  nk7 (multi (release-key met) kp7)  nk8 (multi (release-key met) kp8) nk9 (multi (release-key met) kp9) 
-  nk4 (multi (release-key met) kp4)  nk5 (multi (release-key met) kp5) nk6 (multi (release-key met) kp6) 
-  nk1 (multi (release-key met) kp1)  nk2 (multi (release-key met) kp2) nk3 (multi (release-key met) kp3) 
-  nk0 (multi (release-key met) kp0)  nk. (multi (release-key met) kp.) nke (multi (release-key met) kprt)
-  ptb (multi (release-key met) C-S-↹) 	ntb (multi (release-key met) C-↹)
+  nke (multi (release-key met) kprt)
+  ctr (multi lctl (layer-while-held qwerty))
+  alt (multi lalt (layer-while-held qwerty))
+  ptb (multi (release-key met) C-S-↹) ntb (multi (release-key met) C-↹)
+  mpr (multi (release-key met) prev)  mps (multi (release-key met) pp)  mnx (multi (release-key met) next) 
 )
 (deflayer wmdo
-  _    _     _    @ptb @ntb  _    _     _    _     _   _    _    _    _
-  _    _    M-1   M-2  M-3  M-4  M-'   @nk7 @nk8 @nk9  _    _    _    _
-  _    _    M-5   M-6  M-7  M-8  M-[   @nk4 @nk5 @nk6  _    _    _
-  _   M-9   M-0   M--  M-=   _   M-]   @nk1 @nk2 @nk3 @nke  _    _
-  _    _     _               _              @nk0 @nk. @nk.  _    _    _
+  _    _     _   @ptb @ntb  _    _    _    _    _    _    _    _    _
+  _    _     1    2    3    4    /    [    ]    \    _    _    _    _
+  _    _     5    6    7    8    ◀    ▼    ▲    ▶    _    _    _
+  _    9     0    -    =    _    '   @mpr @mps @mnx @nke  _    _
+  @ctr `    @alt            _             _    _    _    _    _    _
 )
 
 (deflayer fncur
@@ -102,7 +103,7 @@
   _    _  S-◀  S-▲  S-▼  S-▶  _  @mwl @mau @mwr @mwu   _    _    _
   _    _   _    _    _   _    _  @mal @mad @mar @mwd   _    _
   _    _   _    _    _   _    _  prev  pp  next   _    _    _
-  _    _   _            ret             _    _    _    _    _    _
+  _    del ret       bspc               _    _    _    _    _    _
 )
 
 (defalias 
