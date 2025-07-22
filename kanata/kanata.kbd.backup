@@ -1,7 +1,7 @@
 ( defcfg
    process-unmapped-keys yes
    windows-altgr cancel-lctl-press
-   linux-output-device-bus-type USB
+   ;;linux-output-device-bus-type USB
 )
 
 (defsrc
@@ -12,10 +12,10 @@
   lctl lmet lalt           spc            ralt rmet rctl left down right
 )
 (deflayer qwerty
-  @gxt 1    2    3    4    5    6    7    8    9    0    -    =    _
-  @tab q    w    e    r    t    y    u    i    o    p    @dpd _    _
-  @cap a    s    d    f    g    h    j    k    l    @psb _    _
-  @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
+  @gxt _    _    _    _    _    _    _    _    _    _    _    _    _
+  @tab _    _    _    _    _    _    _    _    _    _    @dpd _    _
+  @cap _    _    _    _    _    _    _    _    _    @psb _    _
+  @sf1 _    _    _    _    _    _    _    _    _    @s2f @sfw _ 
    _   _    _              _              @rgr @ctp @ctp  _   _    _
 )
 (defalias
@@ -31,16 +31,15 @@
   qxf (tap-hold 120 120 ' (layer-while-held fncur))
   sfw (fork (tap-hold 100 100 (caps-word 2000) rsft) CapsLock (lsft))
   
-  rgr (tap-hold 130 130 ret ralt)
+  rgr (multi f24 (tap-hold 100 100 ret ralt))
   ctp (tap-hold 120 120 A-a rctl) ;;best tmux prefix ever
-
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
-  `   S-=  S-[  S-]  S-1  S-\  S-7   =   S-,  S-.   _    _    _   _
+  `   S-=  S-[  S-]  S-7  S-\  S-1   =   S-,  S-.   _    _    _   _
   _   min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   _    _    _
   \    [    ]   S-;  S-2   _   S-/  S--  S-5  S-4   _    _    _
-  _    _   spc            bspc           ret  del  del   _    _   _
+  _    _    _             bspc           spc  del  del   _    _   _
 )
 
 (defalias
@@ -48,12 +47,12 @@
   mad (fork (movemouse-accel-down 30 270 3 17) (multi lmet down) (lalt))
   mal (fork (movemouse-accel-left 30 270 3 17) (multi lmet left) (lalt))
   mar (fork (movemouse-accel-right 30 270 3 17) (multi lmet right) (lalt))
-  mwl (mwheel-left 150 120) 
-  mwd (mwheel-down 150 120) 
+  mwl (mwheel-left 150 120)
+  mwd (mwheel-down 150 120)
   mwu (mwheel-up 150 120)
   mwr (mwheel-right 150 120)
   nlk (layer-switch nav)
-  wma (tap-hold 150 150 (layer-switch qwerty) (multi lmet (layer-while-held wmdo)))
+  wma (tap-hold 150 150 (layer-switch qwerty) (layer-while-held wmdo))
   kz1 (tap-hold 150 150 kp1 (multi (layer-toggle ptrlowleft)))
   kz2 (tap-hold 150 150 kp2 (multi (layer-toggle ptrlowmid)))
   kz3 (tap-hold 150 150 kp3 (multi (layer-toggle ptrlowright)))
@@ -63,34 +62,34 @@
   kz7 (tap-hold 150 150 kp7 (multi (layer-toggle ptrtopleft)))
   kz8 (tap-hold 150 150 kp8 (multi (layer-toggle ptrtopmid)))
   kz9 (tap-hold 150 150 kp9 (multi (layer-toggle ptrtopright)))
-  mmp (tap-hold 150 150 mmid (layer-while-held psinkbols))
-  0gr (tap-hold 150 150 kp0 (multi (layer-while-held qwerty)))
-  mrc (tap-hold 150 150 mrgt (multi rctl (layer-while-held qwerty)))
+  es2 (macro esc 30 rpt)
 )
 
 (deflayer nav
-  @tqw  _    left  up  down rght   _ prev  pp  next   _    _    _    _
-  @nlk brup C-S-↹ @mau C-↹ @mwu pgup @kz7 @kz8 @kz9  bspc @nlk  _    _
-  @wma brdn @mal @mad @mar @mwd pgdn @kz4 @kz5 @kz6  @mmp @wma  _
-  lrld @mwl vold volu @mwr mute home @kz1 @kz2 @kz3   end  _    _
-  @ctr @wrt @alt           mlft           @0gr mrgt  mrgt  _    _    _
+  _     _   left  up  down rght   _    _    _    _    _    _    _    _
+  @nlk lrld @mwl @mau @mwr @mwu  M-' @kz7 @kz8 @kz9  mute @nlk _    _
+  @wma M-F5 @mal @mad @mar @mwd  M-[ @kz4 @kz5 @kz6  mmid  @wma _
+  _    brdn brup vold volu  ret  M-] @kz1 @kz2 @kz3  mrgt  _    _
+  _     _   _              mlft            kp0  kp.   kp.  _    _    _
 )
 
 (defalias
-  tqw (layer-while-held qwerty)
-  nke (multi (release-key met) kprt)
-  ctr (multi lctl (layer-while-held qwerty))
-  alt (multi lalt (layer-while-held qwerty))
-  wrt (tap-hold 120 120 ret (multi lmet (layer-while-held qwerty)))
-  ptb (multi (release-key met) C-S-↹) ntb (multi (release-key met) C-↹)
-  mpr (multi (release-key met) prev)  mps (multi (release-key met) pp)  mnx (multi (release-key met) next) 
+  nk7 (multi (release-key met) kp7)  nk8 (multi (release-key met) kp8) nk9 (multi (release-key met) kp9) 
+  nk4 (multi (release-key met) kp4)  nk5 (multi (release-key met) kp5) nk6 (multi (release-key met) kp6) 
+  nk1 (multi (release-key met) kp1)  nk2 (multi (release-key met) kp2) nk3 (multi (release-key met) kp3) 
+  nk0 (multi (release-key met) kp0)  nk. (multi (release-key met) kp.) nke (multi (release-key met) kprt)
+  ptb (multi (release-key met) C-S-↹) 	ntb (multi (release-key met) C-↹)
+  ini (multi (release-key met) home) fin (multi (release-key met) end)  
+  pup (multi (release-key met) pgup) pdn (multi (release-key met) pgdn) 
+  mpr (multi (release-key met) prev) mps (multi (release-key met) pp) mnx (multi (release-key met) next) 
+
 )
 (deflayer wmdo
-  _    _     XX   XX   XX   _    _    _    _    _    _    _    _    _
-  _    _     1    2    3    4    /    [    ]    \    _    _    _    _
-  _    _     5    6    7    8    ◀    ▼    ▲    ▶    _    _    _
-  _    9     0    -    =    _    '    ;    ,    .   bspc  _    _
-  _    `     _              _              _    _    _    _    _    _
+  _    _     _    @ptb @ntb  _    _     _    _     _   _    _    _    _
+  _    _    M-1   M-2  M-3  M-4  @ini @pdn @pup @fin   _    _    _    _
+  _    _    M-5   M-6  M-7  M-8    ◀    ▼    ▲    ▶    _    _    _
+  _   M-9   M-0   M--  M-=   _   mute @mpr @mps @mnx @nke   _    _
+  _    `     _               _               _    _    _    _    _    _
 )
 
 (deflayer fncur
@@ -103,7 +102,7 @@
 
 ;; WIP. maybe kinda would be useful... 
 (deflayer xtra
-  _    _  A-◀  A-▲  A-▼  A-▶  _    _    _    _    _    _    _    _
+  _    _  A-◀  A-▲  A-▼  A-▶ @es2  _    _    _    _    _    _    _
   _    _  S-◀  S-▲  S-▼  S-▶  _  @mwl @mau @mwr @mwu   _    _    _
   _    _   _    _    _   _    _  @mal @mad @mar @mwd   _    _
   _    _   _    _    _   _    _  prev  pp  next   _    _    _
