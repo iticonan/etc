@@ -15,13 +15,15 @@
   @gxt 1    2    3    4    5    6    7    8    9    0    -    =    _
   @tab q    w    e    r    t    y    u    i    o    p    @dpd _    _
   @cap a    s    d    f    g    h    j    k    l    @psb _    _
-  @sf1 z    x    c    v    b    n    m    ,    .    @s2f @sfw _ 
+  @sf1 z    x    c    v    b    n    m    ,    @dst @s2f @sfw _ 
    _   _    _              _              @rgr @ctp @ctp  _   _    _
 )
 (defalias
+  cct (tap-hold-press 120 120 , lctl)
+  dst (tap-hold-press 120 120 . lsft)
   gxt (tap-hold 120 120 grv (layer-while-held xtra))
   tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
-  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wmdo)))
+  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wman)))
             (multi (release-key alt) (macro esc 100 rpt)) (lalt))
   s2f (tap-hold 120 120 / (layer-while-held fncur))
   sf1 (fork (one-shot 500 lsft) CapsLock (rsft))
@@ -37,10 +39,10 @@
 )
 (deflayer psinkbols
   _    _    _    _    _    _    _    _    _    _    _    _    _   _
-  `   S-=  S-[  S-]  S-1  S-\  S-7   =   S-,  S-.   _    _    _   _
-  _   min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   _    _    _
-  \    [    ]   S-;  S-2   _   S-/  S--  S-5  S-4   _    _    _
-  _    _   spc            bspc           ret  del  del   _    _   _
+  S-` S-=  S-[  S-]  S-1   `   S-`   =   S-,  S-.   _    _    _   _
+ @qwt min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   ;    _    _
+  \    [    ]   S-;  S-2   _   S-/  S--  S-4  S-5  @s2f  _    _
+  _    _   bspc            spc           ret  del  del   _    _   _
 )
 
 (defalias
@@ -53,7 +55,9 @@
   mwu (mwheel-up 150 120)
   mwr (mwheel-right 150 120)
   nlk (layer-switch nav)
-  wma (tap-hold 150 150 (layer-switch qwerty) (multi lmet (layer-while-held wmdo)))
+  wma (tap-hold 150 150 (layer-switch qwerty) (multi lmet (layer-while-held wman)))
+  psl (layer-switch psinkbols)
+  qwt (layer-switch qwerty)
   kz1 (tap-hold 150 150 kp1 (multi (layer-toggle ptrlowleft)))
   kz2 (tap-hold 150 150 kp2 (multi (layer-toggle ptrlowmid)))
   kz3 (tap-hold 150 150 kp3 (multi (layer-toggle ptrlowright)))
@@ -69,10 +73,10 @@
 )
 
 (deflayer nav
-  @tqw  _    left  up  down rght   _ prev  pp  next   _    _    _    _
-  @nlk brup C-S-↹ @mau C-↹ @mwu pgup @kz7 @kz8 @kz9  bspc @nlk  _    _
-  @wma brdn @mal @mad @mar @mwd pgdn @kz4 @kz5 @kz6  @mmp @wma  _
-  lrld @mwl vold volu @mwr mute home @kz1 @kz2 @kz3   end  _    _
+  @tqw  _    left  up down rght   _  prev  pp  next   _    _    _    _
+  @nlk brup C-S-↹ @mau C-↹ volu home @kz7 @kz8 @kz9  bspc @nlk  _    _
+  @wma brdn @mal @mad @mar vold end  @kz4 @kz5 @kz6  @mmp @wma  _
+  mute @mwl @mwu @mwd @mwr mute pgup @kz1 @kz2 @kz3  pgdn  _    _
   @ctr @wrt @alt           mlft           @0gr mrgt  mrgt  _    _    _
 )
 
@@ -83,21 +87,21 @@
   alt (multi lalt (layer-while-held qwerty))
   wrt (tap-hold 120 120 ret (multi lmet (layer-while-held qwerty)))
   ptb (multi (release-key met) C-S-↹) ntb (multi (release-key met) C-↹)
-  mpr (multi (release-key met) prev)  mps (multi (release-key met) pp)  mnx (multi (release-key met) next) 
+  mpr (multi (release-key met) prev) mps (multi (release-key met) pp)  mnx (multi (release-key met) next)
 )
-(deflayer wmdo
+(deflayer wman
   _    _     XX   XX   XX   _    _    _    _    _    _    _    _    _
   _    _     1    2    3    4    /    [    ]    \    _    _    _    _
-  _    _     5    6    7    8    ◀    ▼    ▲    ▶    _    _    _
+  _    _     5    6    7    8    ◀    ▼    ▲    ▶   @psl  _    _
   _    9     0    -    =    _    '    ;    ,    .   bspc  _    _
   _    `     _              _              _    _    _    _    _    _
 )
 
 (deflayer fncur
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
- S-↹   ins  F1   F2   F3   F4   C-F4 `   C-S-↹ C-↹  _    _    _    _
+ S-↹   ins  F1   F2   F3   F4   S-⇤  S-⇟  S-⇞  S-⇥  _    _    _    _
   _    prnt F5   F6   F7   F8   S-◀  S-▼  S-▲  S-▶  _    _    _
-  _    F9   F10  F11  F12  _    S-6  S-3  S-8  S-`  _    _    _
+ S-6   F9   F10  F11  F12  _    S-\  S-3  S-8  S-7  _    _    _
   _    _    _            bspc             ret  del  del  _    _    _
 )
 
@@ -105,7 +109,7 @@
 (deflayer xtra
   _    _  A-◀  A-▲  A-▼  A-▶  _    _    _    _    _    _    _    _
   _    _  S-◀  S-▲  S-▼  S-▶  _  @mwl @mau @mwr @mwu   _    _    _
-  _    _   _    _    _   _    _  @mal @mad @mar @mwd   _    _
+  _    _   _   brdn brup lrld _  @mal @mad @mar @mwd   _    _
   _    _   _    _    _   _    _  prev  pp  next   _    _    _
   _    del ret       bspc               _    _    _    _    _    _
 )
