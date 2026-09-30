@@ -1,125 +1,140 @@
-( defcfg
+(defcfg
    process-unmapped-keys yes
    windows-altgr cancel-lctl-press
    linux-output-device-bus-type USB
+   log-layer-changes no
 )
+
+;; tap a Fn key or Hold a Modifier Key (Uppercase M in qwerty)
+(deftemplate fM (f m) (tap-hold 120 120 $f (multi (layer-while-held qwerty) $m)))
+(deftemplate fm (f m) (tap-hold 120 120 $f $m))
+
+(deftemplate kpz (k fx fy zl)  ;; tap Key, hold goes to "Pointer Zone"
+  (fork (multi $fx $fy (layer-toggle $zl))  ;;  see "Raton" layer 
+        (tap-hold 150 150 $k (multi $fx $fy (layer-toggle $zl) (release-key ralt))) (ralt)))
+
+(deftemplate gr (k act);; while in alt-gr 2+ keys or timeout -> mouse mode 
+  (fork $act           ;; »» see "raton" layer 
+        (tap-hold-press 130 140 $k (multi (release-key ralt) $act)) (ralt)))
 
 (defsrc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '    ret
-  lsft z    x    c    v    b    n    m    ,    .    /    rsft up
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft  up
   lctl lmet lalt           spc            ralt rmet rctl left down right
 )
+
+(defhands
+  (left q w e r t caps a s d f g lsft z x c v b)
+  (right y u i o p [ h j k l ; ' n m , . / )
+)
+
 (deflayer qwerty
-  @gxt 1    2    3    4    5    6    7    8    9    0    -    =    _
-  @tab q    w    e    r    t    y    u    i    o    p    @dpd _    _
-  @cap a    s    d    f    g    h    j    k    l    @psb _    _
-  @sf1 z    x    c    v    b    n    m    ,    @dst @s2f @sfw _ 
-   _   _    _              _              @rgr @ctp @ctp  _   _    _
+   grv 1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  @tab q    w    e    r    t    y    u    i    o    p    @bno ]    \
+  @cap a    s    d    f    g    h    j    k    l    @psb  '  ret
+  @sf1 z    x    c    v    b    n    m    ,    .    @ssf @sfw  up
+  lctl lmet lalt           spc           @rgr @ctp  @ctp left down right
 )
-(defvirtualkeys
-  npad XX
-)
+
 (defalias
-  cct (tap-hold-press 120 120 , lctl)
-  dst (tap-hold-press 100 100 . lsft)
-  gxt (tap-hold 120 120 grv (layer-while-held xtra))
+  tab (multi nop9 (tap-hold-press 120 120 tab (layer-while-held combo)))
+  bno (multi nop9 (tap-hold-press 120 120 [ (multi nop0 (layer-while-held bocom))))
 
-  tab (multi f24 (tap-hold-press 120 120 tab (layer-while-held nav)))
-  dpd (tap-hold-press 120 120 [ (layer-while-held nav))
+  cap (tap-hold 120 120 esc (multi 
+  	(layer-while-held wmkp) (tap-hold-opposite-hand 125 nop0 lmet (same-hand hold))))
+  psb (tap-hold 0 100 ; (layer-while-held psinkbols))
 
-  cap (fork (tap-hold-press 120 120 esc (multi lmet (layer-while-held wman)))
-            (multi (release-key alt) (macro esc 100 rpt)) (lalt))
-  s2f (tap-hold 120 120 / (layer-while-held fncur))
   sf1 (fork (one-shot 500 lsft) CapsLock (rsft))
-
-  psb (tap-hold 110 110 ; (layer-while-held psinkbols))
-  qxf (tap-hold 120 120 ' (layer-while-held fncur))
-  sfw (fork (tap-hold 110 110 (caps-word 2000) rsft) CapsLock (lsft))
+  ssf (multi nop9 (tap-hold-press 120 120 / lsft))
+  sfw (fork (tap-hold 130 130 (caps-word 2000) rsft) CapsLock (lsft))
   
-  rgr (tap-hold 130 130 ret ralt)
-  ctp (tap-hold 120 120 A-a rctl) ;;best tmux prefix ever
+  rgr (multi nop7 (tap-hold 120 150 ret (multi ralt (layer-while-held raton))))
+  ctp (tap-hold 130 130 A-a rctl) ;;best tmux prefix ever
 
+  m▲ (movemouse-accel-up    30 270 3 17)    w▲ (mwheel-up    150 120) 
+  m▼ (movemouse-accel-down  30 270 3 17)    w▼ (mwheel-down  150 120) 
+  m◀ (movemouse-accel-left  30 270 3 17)    w◀ (mwheel-left  150 120)
+  m▶ (movemouse-accel-right 30 270 3 17)    w▶ (mwheel-right 150 120)
+
+  qv▲ (t! gr q volu) wm« (t! gr w mbck) em▲ (t! gr e @m▲) rm» (t! gr r mfwd) tb▲ (t! gr t brup)    
+  av▼ (t! gr a vold) sm◀ (t! gr s @m◀)  dm▼ (t! gr d @m▼) fm▶ (t! gr f @m▶)  gb▼ (t! gr g brdn)    
+                     zw◀ (t! gr z @w◀)  xw▲ (t! gr x @w▲) cw▼ (t! gr c @w▼)  vw▶ (t! gr v @w▶)     
+
+  uz7 (t! kpz u f13 f16 ptrtopleft)  iz8 (t! kpz i f14 f16 ptrtopmid)  oz9 (t! kpz o f15 f16 ptrtopright)
+  jz4 (t! kpz j f13 f17 ptrmidleft)  kz5 (t! kpz k f14 f17 ptrmidmid)  lz6 (t! kpz l f15 f17 ptrmidright)
+  mz1 (t! kpz m f13 f18 ptrlowleft)  ,z2 (t! kpz , f14 f18 ptrlowmid)  .z3 (t! kpz . f15 f18 ptrlowright)
+
+  lsm (tap-hold 120 120 mute (multi lsft (layer-while-held qwerty)))
 )
+
+(deflayer raton
+  grv  1     2    3    4    5           6         7     8     9    0 - = _
+  tab  @qv▲ @wm« @em▲ @rm» @tb▲  (t! gr y mrgt) @uz7  @iz8  @oz9   p [ ] \
+  caps @av▼ @sm◀ @dm▼ @fm▶ @gb▼  (t! gr h mmid) @jz4  @kz5  @lz6   ; ' _
+  @lsm @zw◀ @xw▲ @cw▼ @vw▶  b    (t! gr n mlft) @mz1  @,z2  @.z3   / _ _
+  lctl lmet lalt                   spc                ralt   _     _ _ _ _
+)
+
 (deflayer psinkbols
-  _   S-6  S-\  S-3  S-8  S-7   _    _    _    _    _    _    _   _
-  ;   S-=  S-[  S-]  S-1   `   S-`   =   S-,  S-.   _    _    _   _
- @qwt min  S-9  S-0   '   S-'    ◀    ▼    ▲    ▶   ;    _    _
-  \    [    ]   S-;  S-2   _   S-/  S--  S-4  S-5  @s2f  _    _
-  _    _   bspc            spc           ret  del  del   _    _   _
+  _    _    _    _    _    _    _    _   _   _    _    _   _   _
+ S-`  S-=  S-[  S-]  S-1   `   S-3  S-/ S-, S-.  _    _    _   _
+  _   min  S-9  S-0   '   S-'  S-8   =  S-- S-5  ;    _    _
+  \    [    ]   S-;  S-2   _   S-7  S-\ S-6 S-4  /    _    _
+  _    _   bspc            spc          ret del del   _    _   _
 )
 
 (defalias
-  mau (fork (movemouse-accel-up 30 270 3 17)   (multi lmet up) (lalt))
-  mad (fork (movemouse-accel-down 30 270 3 17) (multi lmet down) (lalt))
-  mal (fork (movemouse-accel-left 30 270 3 17) (multi lmet left) (lalt))
-  mar (fork (movemouse-accel-right 30 270 3 17) (multi lmet right) (lalt))
-  mwl (mwheel-left 150 120) 
-  mwd (mwheel-down 150 120) 
-  mwu (mwheel-up 150 120)
-  mwr (mwheel-right 150 120)
-  nlk (multi f24 (layer-switch nav))
-  wma (tap-hold 150 150 (layer-switch qwerty) (multi lmet (layer-while-held wman)))
-  psl (layer-switch psinkbols)
-  qwt (layer-switch qwerty)
+  ;;nlk (multi f24 (layer-switch nav))
   ;;kz1 (tap-hold 170 170 kp1 (multi f13 f18 (layer-toggle ptrlowleft)))
-  kz1 (fork (tap-hold 100 100 kp1 (multi f13 f18 (layer-toggle ptrlowleft)))  kp1 (f24))
+  ;;kz1 (fork (tap-hold 100 100 kp1 (multi f13 f18 (layer-toggle ptrlowleft)))  kp1 (f24))
   ;;kz2 (tap-hold 170 170 kp2 (multi f14 f18 (layer-toggle ptrlowmid)))
-  kz2 (fork (tap-hold 100 100 kp2 (multi f14 f18 (layer-toggle ptrlowmid)))   kp2 (f24))
-  kz3 (fork (tap-hold 100 100 kp3 (multi f15 f18 (layer-toggle ptrlowright))) kp3 (f24))
-  kz4 (fork (tap-hold 100 100 kp4 (multi f13 f17 (layer-toggle ptrmidleft)))  kp4 (f24))
-  kz5 (fork (tap-hold 100 100 kp5 (multi f14 f17 (layer-toggle ptrmidmid)))   kp5 (f24))
-  kz6 (fork (tap-hold 100 100 kp6 (multi f15 f17 (layer-toggle ptrmidright))) kp6 (f24))
-  kz7 (fork (tap-hold 100 100 kp7 (multi f13 f16 (layer-toggle ptrtopleft)))  kp7 (f24))
-  kz8 (fork (tap-hold 100 100 kp8 (multi f14 f16 (layer-toggle ptrtopmid)))   kp8 (f24))
-  kz9 (fork (tap-hold 100 100 kp9 (multi f15 f16 (layer-toggle ptrtopright))) kp9 (f24))
-  k+p (tap-hold 150 150 mmid (layer-while-held psinkbols))
-  0gr (tap-hold 170 170 kp0 (multi (layer-while-held qwerty)))
-  mrc (tap-hold 150 150 mrgt (multi rctl (layer-while-held qwerty)))
+  ;;kz1 (fork kp1 (multi f13 f18 (layer-toggle ptrlowleft))  (nop0))
+  eps (multi nop9 (tap-hold 120 120 esc (layer-while-held psinkbols)))
+  
 )
 
-(deflayer nav
-  @tqw  _    left  up down rght   _  mmid  kp/  kp*  bspc bspc  _    _
-  @nlk brup C-S-↹ @mau C-↹ volu home @kz7 @kz8 @kz9  kp-  @nlk  _    _
-  @wma brdn @mal @mad @mar vold pgdn @kz4 @kz5 @kz6  @k+p  pgup  _
-  mute @mwl @mwu @mwd @mwr mute end  @kz1 @kz2 @kz3  kprt mrgt  _
-  @ctr @wrt @alt           mlft           @0gr  kp.   kp.  _    _    _
+
+(deflayer combo
+  _    _      _    _    _    _     _    _    _   _    _    _    _    _
+  _   ins   @F1m @F2s @F3c  @F4u brdn C-S-↹ C-↹ brup volu  _    _    _   
+  _   prnt  @F5M @F6S @F7C  @F8d    ◀    ▼    ▲   ▶  vold  _    _    
+  _   F9     F10  F11  F12  mute  home pgdn pgup end mute  _    _    
+  _    _     _          bspc                ret  del  del  _    _    _
+)
+(deflayer bocom
+  _     _    _    _   _   _      _    _    _    _    _    _    _    _
+  _   volu C-S-↹ @m▲ C-↹ brup  @F1mr @F2c @F3s @F4m  ins  _    _    _   
+  _   vold  @m◀  @m▼ @m▶ brdn  @F5mm @F6C @F7S @F8M  prnt _    _    
+ mute  @w◀  @w▲  @w▼ @w▶  _    @F9ml  F10  F11  F12   _   _    _    
+  _     _    _             bspc            ret  del  del  _    _    _
 )
 
 (defalias
-  tqw (layer-while-held qwerty)
-  nke (multi (release-key met) kprt)
-  ctr (multi lctl (layer-while-held qwerty))
-  alt (multi lalt (layer-while-held qwerty))
-  wrt (tap-hold 120 120 ret (multi lmet (layer-while-held qwerty)))
-  ptb (multi (release-key met) C-S-↹) ntb (multi (release-key met) C-↹)
-  fnc (layer-while-held fncur)
-  mpr (multi (release-key met) prev) mps (multi (release-key met) pp)  mnx (multi (release-key met) next)
-)
-(deflayer wman
-  _    _     XX   XX   XX   _    _    _    _    _    _    _    _    _
-  _    _     1    2    3    4    /    [    ]    \    _    _    _    _
-  _    _     5    6    7    8    ◀    ▼    ▲    ▶   @psl  _    _
-  _    9     0    -    =    _    '    ;    ,    .   @fnc  _    _
-  _    `     _              _              _    _    _    _    _    _
+  F1m (t! fm F1 lmet)        F2s (t! fm F2 lsft)       F3c (t! fm F3 lctl)
+  F5M (t! fM F5 lmet)        F6S (t! fM F6 lsft)       F7C (t! fM F7 lctl)
+  F2c (t! fm F6 lctl)        F3s (t! fm F7 lsft)       F4m (t! fm F8 lmet)
+  F6C (t! fM F6 lctl)        F7S (t! fM F7 lsft)       F8M (t! fM F8 lmet)
+  F4u (t! fm F4 brup)        F8d (t! fm F8 brdn)
+  F1mr (t! fm F1 mrgt)       F5mm (t! fm F5 mmid)      F9ml (t! fm F9 mlft)
+  k+p (tap-hold 120 120 kp+ (layer-switch psinkbols))
 )
 
-(deflayer fncur
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
- S-↹   ins  F1   F2   F3   F4   S-⇤  S-⇟  S-⇞  S-⇥  _    _    _    _
-  _    prnt F5   F6   F7   F8   S-◀  S-▼  S-▲  S-▶  _    _    _
- S-6   F9   F10  F11  F12  _    S-\  S-3  S-8  S-7  _    _    _
-  _    _    _            bspc             ret  del  del  _    _    _
+(deflayer wmkp
+  _    _     _    _    _    _    _    _    kp*  kp/ bspc  _    _    _
+  _    _     1    2    3    4   M-[   kp7  kp8  kp9 kp-   _    _    _
+  _    _     5    6    7    8   M-]   kp4  kp5  kp6 @k+p  _    _
+  _    9     0    -    =    _   M-\   kp1  kp2  kp3 kprt  _    _
+  _   lrld   _             M-'             kp0  kp.  kp.  _    _    _
 )
 
-;; WIP. maybe kinda would be useful... 
-(deflayer xtra
-  _    _  M-◀  M-▲  M-▼  M-▶  _    _   _   @mau  _    _    _    _
-  _    _  A-◀  A-▲  A-▼  A-▶  _  mlft @mal @mad @mar mrgt  _    _
-  _    _   _   brdn brup lrld _  @mwl @mwd @mwu @mwr  _    _
-  _    _   _    _    _   _    _  prev  pp  next   _   _    _
-  _    del ret       bspc               _    _    _   _    _    _
+(deflayer navlock ;; legacy use (could still be reinvented)
+   _     _  left up  down rght    _    ◀◀    ▶⏸    ▶▶     _    _    _    _
+   _     _  pgup @m▲ pgdn  _     mrgt C-S-↹ brup  C-↹   bspc   _    _    _
+   _     _  @m◀  @m▼ @m▶   _     mmid home  brdn   end   @eps  _    _
+  mute  @w◀ @w▼  @w▲ @w▶   _     mlft vold  mute   volu  ret   _    _
+   _     _   _           _                   _      _      _   _    _    _
 )
 
 (defalias 
@@ -298,6 +313,10 @@ _ _ _ spc  _ _ _ _ _ _
 )
 
 (defvar
+ m▲ mousemove-accel-up
+ m▼ mousemove-accel-down 
+ ;;m◀ 
+ ;;m▶
  x0 2185
  x1 6554
  x2 10923
