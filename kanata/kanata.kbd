@@ -2,12 +2,8 @@
    process-unmapped-keys yes
    windows-altgr cancel-lctl-press
    linux-output-device-bus-type USB
-   log-layer-changes no
+   log-layer-changes yes
 )
-
-;; tap a Fn key or Hold a Modifier Key (Uppercase M in qwerty)
-(deftemplate fM (f m) (tap-hold 120 120 $f (multi (layer-while-held qwerty) $m)))
-(deftemplate fm (f m) (tap-hold 120 120 $f $m))
 
 (deftemplate kpz (k fx fy zl)  ;; tap Key, hold goes to "Pointer Zone"
   (fork (multi $fx $fy (layer-toggle $zl))  ;;  see "Raton" layer 
@@ -16,6 +12,28 @@
 (deftemplate gr (k act);; while in alt-gr 2+ keys or timeout -> mouse mode 
   (fork $act           ;; »» see "raton" layer 
         (tap-hold-press 130 140 $k (multi (release-key ralt) $act)) (ralt)))
+
+;; tap one-shots to a "Pointer Zone", hold holds modifier
+(deftemplate zm (pz m) (fork (tap-hold 150 150 (concat @pz $pz) $m) (concat @pz $pz) (nop0)))
+
+(deftemplate th (t h) (fork (tap-hold 150 150 $t $h) $h (nop0) ))
+(deftemplate thl (t hl) (fork (tap-hold 150 150 $t (layer-while-held $hl)) $t (nop0)))
+
+(deftemplate ovz (fx fy zl) (multi    ;; One-shot Mouse Zone
+    (on-press press-vkey $fx)  (on-release release-vkey $fx)
+    (on-press press-vkey $fy)  (on-release release-vkey $fy)
+    (one-shot-pause-processing 300)
+    (one-shot 500 (layer-while-held $zl))))
+
+(deftemplate n1^m (k o) 
+   (switch (f24 nop1) $k break
+           (lctl rctl lsft rsft lalt ralt lmet rmet) $o break
+	   ()     $k break))
+
+(defvirtualkeys
+  vF13 (one-shot 600 F13)  vF14 (one-shot 600 F14)  vF15 (one-shot 600 F15)  
+  vF16 (one-shot 600 F16)  vF17 (one-shot 600 F17)  vF18 (one-shot 600 F18)
+)
 
 (defsrc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
@@ -26,8 +44,8 @@
 )
 
 (defhands
-  (left q w e r t caps a s d f g lsft z x c v b)
-  (right y u i o p [ h j k l ; ' n m , . / )
+  (left q w e r t a s d f g lsft z x c v b)
+  (right caps y u i o p [ h j k l ; ' n m , . / )
 )
 
 (deflayer qwerty
@@ -35,18 +53,19 @@
   @tab q    w    e    r    t    y    u    i    o    p    @bno ]    \
   @cap a    s    d    f    g    h    j    k    l    @psb  '  ret
   @sf1 z    x    c    v    b    n    m    ,    .    @ssf @sfw  up
-  lctl lmet lalt           spc           @rgr @ctp  @ctp left down right
+   ctl lmet alt           spc            @rgr @ctp  @ctp left down right
 )
 
 (defalias
-  tab (multi nop9 (tap-hold-press 120 120 tab (layer-while-held combo)))
-  bno (multi nop9 (tap-hold-press 120 120 [ (multi nop0 (layer-while-held bocom))))
+  met (multi lmet nop1)
+  tab (multi nop9 (tap-hold-press 120 120 tab (layer-while-held fnnav)))
+  bno (multi nop9 (tap-hold-press 120 120 [   (layer-while-held mouse)))
 
-  cap (tap-hold 120 120 esc (multi 
-  	(layer-while-held wmkp) (tap-hold-opposite-hand 125 nop0 lmet (same-hand hold))))
+  cap (tap-hold 120 120 esc (multi (layer-while-held wmkp) 
+      (tap-hold-opposite-hand 90 nop0 lmet)))
   psb (tap-hold 0 100 ; (layer-while-held psinkbols))
 
-  sf1 (fork (one-shot 500 lsft) CapsLock (rsft))
+  sf1 (fork (one-shot-release 500 lsft) CapsLock (rsft))
   ssf (multi nop9 (tap-hold-press 120 120 / lsft))
   sfw (fork (tap-hold 130 130 (caps-word 2000) rsft) CapsLock (lsft))
   
@@ -86,39 +105,42 @@
 )
 
 (defalias
-  ;;nlk (multi f24 (layer-switch nav))
-  ;;kz1 (tap-hold 170 170 kp1 (multi f13 f18 (layer-toggle ptrlowleft)))
-  ;;kz1 (fork (tap-hold 100 100 kp1 (multi f13 f18 (layer-toggle ptrlowleft)))  kp1 (f24))
-  ;;kz2 (tap-hold 170 170 kp2 (multi f14 f18 (layer-toggle ptrlowmid)))
-  ;;kz1 (fork kp1 (multi f13 f18 (layer-toggle ptrlowleft))  (nop0))
   eps (multi nop9 (tap-hold 120 120 esc (layer-while-held psinkbols)))
-  
+  pz7 (t! ovz vF13 vF16 ptrtopleft) pz8 (t! ovz vF14 vF16 ptrtopmid) pz9 (t! ovz vF15 vF16 ptrtopright)
+  pz4 (t! ovz vF13 vF17 ptrmidleft) pz5 (t! ovz vF14 vF17 ptrmidmid) pz6 (t! ovz vF15 vF17 ptrmidright)
+  pz1 (t! ovz vF13 vF18 ptrlowleft) pz2 (t! ovz vF14 vF18 ptrlowmid) pz3 (t! ovz vF15 vF18 ptrlowright)
+  thz1ps (t! thl @pz1 psinkbols)
+  tgnavmou (switch ((layer mouse)) (layer-switch fnnav) break
+                   ((layer fnnav)) (layer-switch mouse) break)
+  nav (switch ((base-layer qwerty)) (layer-switch mouse) break
+              ()  (tap-hold 120 120 @tgnavmou (layer-while-held fnnav)) break)
+  mou (switch ((base-layer qwerty)) (layer-switch fnnav) break
+              ()  (tap-hold 120 120 @tgnavmou (layer-while-held mouse)) break)
+  qwa (tap-hold 120 120 (layer-switch qwerty) @cap)
 )
 
-
-(deflayer combo
-  _    _      _    _    _    _     _    _    _   _    _    _    _    _
-  _   ins   @F1m @F2s @F3c  @F4u brdn C-S-↹ C-↹ brup volu  _    _    _   
-  _   prnt  @F5M @F6S @F7C  @F8d    ◀    ▼    ▲   ▶  vold  _    _    
-  _   F9     F10  F11  F12  mute  home pgdn pgup end mute  _    _    
-  _    _     _          bspc                ret  del  del  _    _    _
+(deflayer mouse
+  _     _   @2l  @3u @4d  @5r  _         @7◀◀           @8▶⏸           @9▶▶      _    _  _  _
+ @nav brup C-S-↹ @m▲ C-↹ volu mrgt  (t! zm 7 ◀◀)   (t! zm 8 ▶⏸)   (t! zm 9 ▶▶)  ins @mou _  _  
+ @qwa brdn  @m◀  @m▼ @m▶ vold mmid (t! zm 4 lsft) (t! zm 5 lctl) (t! zm 6 lmet) prnt  _  _    
+  _    @w◀  @w▲  @w▼ @w▶  _   mlft      @thz1ps        @pz2            @pz3      _    _  _    
+  _   @met   _     (tap-hold 120 120 spc nop0)         ralt            rmet     rctl  _  _  _
 )
-(deflayer bocom
-  _     _    _    _   _   _      _    _    _    _    _    _    _    _
-  _   volu C-S-↹ @m▲ C-↹ brup  @F1mr @F2c @F3s @F4m  ins  _    _    _   
-  _   vold  @m◀  @m▼ @m▶ brdn  @F5mm @F6C @F7S @F8M  prnt _    _    
- mute  @w◀  @w▲  @w▼ @w▶  _    @F9ml  F10  F11  F12   _   _    _    
-  _     _    _             bspc            ret  del  del  _    _    _
+(deflayer fnnav
+  _    _    @2l  @3u  @4d  @5r       _  @7◀◀ @8▶⏸ @9▶▶   _    _   _   _
+ @nav ins   @F1◀ @F2▲ @F3▼ @F4▶     M-◀  M-▼  M-▲  M-▶  C-↹ @mou  _   _
+ @qwa prnt  @F5M @F6C @F7S @F8▲      ◀    ▼    ▲    ▶  C-S-↹  _   _    
+  _   @F9▼ @F10▲ @F11 @F12▼ mute   home pgdn  pgup end  mute  _   _    
+  _   @met   _   (tap-hold 120 120 spc nop0)  ralt rmet rctl  _   _   _
 )
 
-(defalias
-  F1m (t! fm F1 lmet)        F2s (t! fm F2 lsft)       F3c (t! fm F3 lctl)
-  F5M (t! fM F5 lmet)        F6S (t! fM F6 lsft)       F7C (t! fM F7 lctl)
-  F2c (t! fm F6 lctl)        F3s (t! fm F7 lsft)       F4m (t! fm F8 lmet)
-  F6C (t! fM F6 lctl)        F7S (t! fM F7 lsft)       F8M (t! fM F8 lmet)
-  F4u (t! fm F4 brup)        F8d (t! fm F8 brdn)
-  F1mr (t! fm F1 mrgt)       F5mm (t! fm F5 mmid)      F9ml (t! fm F9 mlft)
-  k+p (tap-hold 120 120 kp+ (layer-switch psinkbols))
+(defalias  
+  2l  (t! n1^m ◀  2)   3u  (t! n1^m ▲ 3)    4d  (t! n1^m ▼ 4)          5r(t! n1^m ▶ 5)
+  7◀◀ (t! n1^m ◀◀ 7)   8▶⏸ (t! n1^m ▶⏸ 8)    9▶▶ (t! n1^m ▶▶ 9) 
+  F1◀ (t! th F1 left)  F2▲ (t! th F2 up)     F3▼ (t! th F3 down)        F4▶ (t! th F4 right)
+  F5M (t! th F5 lmet)  F6C (t! th F6 lctl)   F7S (t! th F7 lsft)        F8▲ (t! th F8 volu)
+  F9▼ (t! th F9 brdn)  F10▲ (t! th F10 brup) F11 (t! thl F11 psinkbols) F12▼ (t! th F12 vold)
+  k+p (t! thl kp+  psinkbols)
 )
 
 (deflayer wmkp
@@ -127,14 +149,6 @@
   _    _     5    6    7    8   M-]   kp4  kp5  kp6 @k+p  _    _
   _    9     0    -    =    _   M-\   kp1  kp2  kp3 kprt  _    _
   _   lrld   _             M-'             kp0  kp.  kp.  _    _    _
-)
-
-(deflayer navlock ;; legacy use (could still be reinvented)
-   _     _  left up  down rght    _    ◀◀    ▶⏸    ▶▶     _    _    _    _
-   _     _  pgup @m▲ pgdn  _     mrgt C-S-↹ brup  C-↹   bspc   _    _    _
-   _     _  @m◀  @m▼ @m▶   _     mmid home  brdn   end   @eps  _    _
-  mute  @w◀ @w▼  @w▲ @w▶   _     mlft vold  mute   volu  ret   _    _
-   _     _   _           _                   _      _      _   _    _    _
 )
 
 (defalias 
